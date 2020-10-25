@@ -1,5 +1,6 @@
 package io.github.t14g.clientes.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -30,6 +31,8 @@ public class Cliente {
     private String cpf;
 
     @Column(name = "data_cadastro") //Em bancos usar _
+    //Parece ser o retorno do json no lado do Client
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataCadastro;
 
     //Na hora que for persistir coloca a data atual, antes de persistir na verdade
