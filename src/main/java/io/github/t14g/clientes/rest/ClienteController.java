@@ -44,4 +44,18 @@ public class ClienteController {
                 .findById(id)
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
+
+    @DeleteMapping("{id}")
+    //No content  indica que nada é retornado
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deletar( @PathVariable Integer id) {
+        repository
+                .findById(id)
+                .map(cliente -> {
+                    repository.delete(cliente);
+                    //Se retornasse null entraria na exception então retorne void
+                    return Void.TYPE;
+                })
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 }
