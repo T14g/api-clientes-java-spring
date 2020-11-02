@@ -20,7 +20,7 @@ public class ClientesApplication {
     public CommandLineRunner run(@Autowired ClienteRepository repository){
         return  args -> {
             //O builder vai preenchendo como se fosse 1 formulário
-            Cliente cliente = Cliente.builder().cpf("99999999999").nome("Fulano").build();
+            Cliente cliente = Cliente.builder().cpf("06833591008").nome("Fulano").build();
             repository.save(cliente);
         };
     }

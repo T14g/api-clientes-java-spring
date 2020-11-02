@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.validation.Valid;
+
 //Controlador Rest == receber requisições, enviar respostas HTTP rest
 //tem o @ResponseBody que traz a resposta no formado que retornou sem ter que converter
 @RestController
@@ -29,7 +31,9 @@ public class ClienteController {
     //@RequestBody indica que esse cliente é aquele json que vem no corpo a requisição
     //Isso irá converter o objeto Json em Objeto do Tipo Cliente
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente salvar(@RequestBody  Cliente cliente){
+    //@Valid faz a validação ocorrer pelo Spring e também no momento da requisição e não persistencia
+    //Na persistencia ele já espera que tudo esteja válido
+    public Cliente salvar(@RequestBody @Valid Cliente cliente){
         return repository.save(cliente);
     }
 
@@ -56,6 +60,21 @@ public class ClienteController {
                     //Se retornasse null entraria na exception então retorne void
                     return Void.TYPE;
                 })
-                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado!"));
+    }
+
+    @PutMapping("{id}")
+    //Não retornar nada
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void atualizar( @PathVariable Integer id, @RequestBody Cliente clienteAtualizado) {
+        repository
+            .findById(id)
+            .map(cliente -> {
+                //Cliente atualizado recebe o ID do cliente encontrado
+                clienteAtualizado.setId(cliente.getId());
+                //Save ou atualiza caso já exista o ID ou salva novo caso não
+                return repository.save(clienteAtualizado);
+            })
+            .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado!"));
     }
 }
